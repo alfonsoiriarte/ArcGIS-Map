@@ -33,11 +33,6 @@ function handleMap () {
         zoom: 10,                               /* Nivel de zoom */
         container: "viewDiv"                    /* Div contenedor de mapa */
     });
-    /* Añado busqueda inteligente */
-    const search = new Search({
-        view: view
-    });
-    view.ui.add(search, "top-right");
     const graphicsLayer = new GraphicsLayer();
     map.add(graphicsLayer);
     /* Mapeo array de puntos */
@@ -155,10 +150,42 @@ function handleMap () {
         if (event.action.id === "delete-marker") {
             let idActual = view.popup.selectedFeature.attributes.markerId - 1;
             pointsArray.splice(idActual, 1);
+            /* Actualizo marcadores en mapa y en select */
             handleMap();
+            fillSelector(pointsArray);
         }
     });
+    var search = new Search({
+        view: view,
+    });
     map.layers.add(featureLayer);
+    view.on("hold", function (evt) {
+        /* Obtengo direccion apuntando al evento "evt" y añado marcador cuando la promesa se resuelve */
+        search.search(evt.mapPoint)
+        .then(e => {
+            let direccionEventual = e.results[0].results[0].name
+            /* Añadir point al array */
+            let latitudClick = evt.mapPoint.latitude;
+            let longitudClick = evt.mapPoint.longitude;
+            let lastId = (pointsArray[pointsArray.length - 1].pointId) || 0;
+            let nombreLugar = e.results[0].results[0].target.attributes.PlaceName;
+            console.log(e.results[0].results[0].target.attributes.PlaceName)
+            pointsArray.push({
+                "pointId": lastId + 1,
+                "nombre":  nombreLugar || "Marcador N°: " + (lastId + 2),
+                "direccion":  direccionEventual,
+                "telefono": "No encontrado",
+                "category": "No encontrado",
+                "latitud": latitudClick,
+                "longitud": longitudClick
+            });
+            /* Actualizo marcadores en mapa y en select */
+            handleMap();
+            fillSelector(pointsArray);
+        })
+
+        search.resultGraphicEnabled = false;
+    });
 });
 }
 /* Inicializo el mapa */
@@ -169,8 +196,7 @@ var form = document.getElementById("formMapId");
 function handleForm(event) { event.preventDefault(); } 
 form.addEventListener('submit', handleForm);
 
-/* Inicializo contador de marcadores en 1 porque ya hay un ejemplo default
- y seteo el select para eliminar marcadores */
+
 let counter = 0;
 /* Creo funcion para actualizar select eliminador de marcadores */
 function fillSelector(pointsArray) {
@@ -199,6 +225,16 @@ function deleteMarkerFromButton(){
     /* Recargo mapa y select */
     handleMap();
     fillSelector(pointsArray);
+}
+
+/* Funcion para limpiar campos de texto */
+function cleanForm(){
+    document.formMap.nameInput.value = "";
+    document.formMap.nameInput.value = "";
+    document.formMap.direccionInput.value = "";
+    document.formMap.telefonoInput.value = "";
+    document.formMap.categoryInput.value = "";
+    document.formMap.coordenadasInput.value = "";
 }
 
 
@@ -257,6 +293,8 @@ function validate() {
     fillSelector(pointsArray); 
     /* Creo el mapa con nuevo marcador */
     handleMap();
+    /* Lipio campos de texto */
+    cleanForm();
     return true;
 }
 

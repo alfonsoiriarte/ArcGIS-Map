@@ -12,13 +12,13 @@
 
   </head>
   <body>
-    <div class="container bg-light">
-      <div class="row m-0">
+    <div class="container">
+      <div class="row m-0 bg-light">
         <div class="col-9 p-0">
           <div id="viewDiv" class="h-100"></div>
         </div>
-        <div class="col-3 p-0">
-          <form class="formulario p-5" id="formMapId" name="formMap" onsubmit="return validate()" >
+        <div class="col-3 p-0 mt-5">
+          <form class="formulario px-5" id="formMapId" name="formMap" onsubmit="return validate()" >
             <h5 class="d-flex flex-nowrap">📍 Añade un marcador</h5>
             <div class="mb-1">
               <label for="nameInput" class="form-label">Nombre</label>
@@ -43,16 +43,23 @@
             <div class="mb-1">
                 <label for="coordenadasInput" class="form-label">Coordenadas</label>
                 <input type="text" class="form-control" name="coordenadasInput" id="valorCoordenadas">
-                <small>Si no conoces las coordenadas puedes mantener click en el mapa. Cuidado! Tomará los datos que ingreses aquí (menos las coordenadas y la direccion).</small>
+                <small>Si no conoces las coordenadas puedes mantener click en el mapa donde quieras un marcador!</small>
             </div>
             <button itemid="botonForm" type="submit" class="btn btn-primary" id="btnSubmit">Añadir</button>
           </form>
-          <div class="w-10 px-5 pb-5 m-auto">
-              <h5 class="p-1">❌ Eliminar marcador <span class="lead">(puedes hacerlo desde el mapa)</span></h5>
+          <div class="w-10 px-5 pb-2 m-auto">
+              <h5 class="px-1">❌ Eliminar marcador <span class="lead">(puedes hacerlo desde el mapa)</span></h5>
               <select id="marcadoresId" class="form-select mb-1" aria-label="Categoria" name="categoryInput">
                   Categoria
               </select>
               <button onclick="deleteMarkerFromButton();" class="btn btn-danger">Eliminar</button>
+          </div>
+          <a class="px-5" id="downloadPoints">Descargar marcadores</a>
+          <div class="px-5 pt-3 pb-5">
+              <p class="p-0 m-0">Cargar marcadores (Json)</p>
+              <button class="btn btn-info my-1" id="uploadJson"><img src="/media/upload.png" alt="upload"></button>
+              <input type="file" class="custom-file-input" id="jsonFile" aria-describedby="uploadJson">
+              <label for="jsonFile" id="jsonFileLabel"></label>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
 # Aeroterra - prueba técnica
-[![Sin-t-tulo.png](https://i.postimg.cc/hPfsrtWW/Sin-t-tulo.png)](https://postimg.cc/JGCj7mzP)
+[![Screenshot-1.png](https://i.postimg.cc/R01p871J/Screenshot-1.png)](https://postimg.cc/xkCPNb49)
 
-## Alfonso Iriarte
+Leer /media/prueba_tecnica_js_jr.pdf para un mejor entendimiento del proyecto

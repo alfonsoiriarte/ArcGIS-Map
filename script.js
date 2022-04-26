@@ -140,7 +140,7 @@ function handleMap () {
             actions: [{
                 title: "Eliminar marcador",
                 id: "delete-marker",
-                image: "remove.png"
+                image: "./media/remove.png"
             }]
         }
     });
@@ -163,15 +163,15 @@ function handleMap () {
         /* Obtengo direccion apuntando al evento "evt" y añado marcador cuando la promesa se resuelve */
         search.search(evt.mapPoint)
         .then(e => {
-            let direccionEventual = e.results[0].results[0].name
             /* Añadir point al array */
+            let direccionEventual = e.results[0].results[0].name
             let latitudClick = evt.mapPoint.latitude;
             let longitudClick = evt.mapPoint.longitude;
             let lastId = (pointsArray[pointsArray.length - 1].pointId) || 0;
             let nombreLugar = e.results[0].results[0].target.attributes.PlaceName;
             console.log(e.results[0].results[0].target.attributes.PlaceName)
             pointsArray.push({
-                "pointId": lastId + 1,
+                "pointId": lastId + 1 ,
                 "nombre":  nombreLugar || "Marcador N°: " + (lastId + 2),
                 "direccion":  direccionEventual,
                 "telefono": "No encontrado",
@@ -302,3 +302,60 @@ function validate() {
 function eliminarMarcador () {
     console.log(document.getElementById("marcadoresId").value)
 }
+
+/* Guardo los marcadores por archivo Json */
+document.getElementById("uploadJson").addEventListener("click", handleFiles);
+
+function handleFiles() {
+    var file = document.getElementById("jsonFile").files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function(evt) {
+            try {
+                var newPoints = JSON.parse(evt.target.result);
+            } catch (err) {
+                alert("Error en el JSON\n" + err.message);
+            }
+            if (newPoints) {
+                newPoints.forEach(point => {
+                    pointsArray.push({
+                        "pointId": point.pointId,
+                        "nombre": point.nombre,
+                        "direccion": point.direccion,
+                        "telefono": point.telefono,
+                        "category": point.category,
+                        "latitud": point.latitud,
+                        "longitud": point.longitud
+                    });
+                });
+            }
+            /* Actualizo select para eliminar marcadores */
+            fillSelector(pointsArray); 
+            /* Creo el mapa con nuevo marcador */
+            handleMap();
+        }
+        reader.onerror = function(evt) {
+            alert("Error al leer el archivo");
+        }
+    } else {
+        alert("Ningun archivo cargado.");
+    }
+};
+
+/* Descargar marcadores ACTUALES como Json */
+document.getElementById("downloadPoints").addEventListener("click", function() {
+    if (pointsArray.length) {
+        console.log("a")
+        var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pointsArray));
+        console.log(data)
+        var buttonDownload = document.getElementById('downloadPoints');
+        buttonDownload.setAttribute("href", data);
+        buttonDownload.setAttribute("download", "points.json");
+        buttonDownload.click();
+    } else {
+        alert("No hay puntos en el mapa para descargar.");
+    }
+
+});

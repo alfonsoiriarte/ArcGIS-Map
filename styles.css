@@ -2,3 +2,10 @@ body {
     padding: 0;
     margin: 0;
 }
+#downloadPoints {
+    text-decoration: blue underline;
+    cursor: pointer;
+}
+#downloadPoints:hover {
+    color: blue;
+}
